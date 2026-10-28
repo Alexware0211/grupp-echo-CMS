@@ -54,6 +54,15 @@ Hard-coded UI texts use dictionary items with an English fallback, e.g.
 `@Umbraco.GetDictionaryValueOrDefault("Site.Menu", "Menu")`.
 Create the key under *Translation* in the backoffice to add the Swedish text (SCRUM-31).
 
+## Troubleshooting
+**"BootFailedException: Boot failed: Umbraco cannot run" on first start**
+Umbraco could not create the local SQLite database file. Create an empty one and restart:
+```powershell
+New-Item -ItemType File -Force src/Kvarter.Web/umbraco/Data/Umbraco.sqlite.db
+dotnet run --project src/Kvarter.Web
+```
+The installer then appears and fills the empty file. Details are in `src/Kvarter.Web/umbraco/Logs/`.
+
 ## Definition of done
 - Acceptance criteria in the Jira story are met
 - Pull request reviewed and merged to `main`

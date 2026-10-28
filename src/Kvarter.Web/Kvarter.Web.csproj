@@ -13,6 +13,17 @@
     <PackageReference Include="uSync" Version="17.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!--
+      Security patches for libraries Umbraco pulls in (NuGet audit warnings NU1902/NU1903).
+      Pins each one to the newest patch release of the SAME major/minor version Umbraco uses.
+      Remove these lines once an Umbraco 17 update ships the fixed versions itself.
+    -->
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.*" />
+    <PackageReference Include="MessagePack" Version="3.1.*" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.*" />
+  </ItemGroup>
+
   <PropertyGroup>
     <!--
       Opt-in to app-local ICU to ensure consistent globalization APIs across different platforms.
