@@ -1,0 +1,10 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Home>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+@{
+    Layout = "_Layout.cshtml";
+}
+@* Start page. SCRUM-22 adds the hero and the block list here. *@
+<section class="container" style="padding-block: 64px;">
+    <h1>@Model.Name</h1>
+</section>

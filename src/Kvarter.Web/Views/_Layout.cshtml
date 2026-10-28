@@ -1,14 +1,17 @@
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using System.Globalization
 @using Umbraco.Extensions
 @*
-    Master layout for every page (SCRUM-21).
-    Use it from a page template:   @{ Layout = "_Layout.cshtml"; }
-    Optional sections:             @section Head { ... }   @section Scripts { ... }
+    Master template for every page (SCRUM-21). In the backoffice, pick "_Layout" as the
+    master template when you create a new template.
+    Optional sections:  @section Head { ... }   @section Scripts { ... }
 *@
 @{
     var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-    var pageTitle = ViewData["Title"] as string ?? Model.Name;
+    // SEO composition (SCRUM-50): fall back to the page name when no meta title is set
+    var metaTitle = Model.Value<string>("metaTitle");
+    var metaDescription = Model.Value<string>("metaDescription");
+    var pageTitle = ViewData["Title"] as string ?? (string.IsNullOrWhiteSpace(metaTitle) ? Model.Name : metaTitle);
 }
 <!doctype html>
 <html lang="@lang">
@@ -17,6 +20,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>document.documentElement.classList.add('js')</script>
     <title>@pageTitle | Kvarter</title>
+    @if (!string.IsNullOrWhiteSpace(metaDescription))
+    {
+        <meta name="description" content="@metaDescription">
+    }
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&display=swap">
