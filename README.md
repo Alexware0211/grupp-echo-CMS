@@ -11,7 +11,7 @@ Group project (Grupp Echo). Jira: https://grupp-echo.atlassian.net/jira/software
 
 ## Getting started
 1. Install the [.NET 10 SDK](https://dotnet.microsoft.com/download) and Visual Studio 2026 / Rider / VS Code.
-2. `git clone https://github.com/<owner>/Kvarter.git`
+2. `git clone https://github.com/Alexware0211/grupp-echo-CMS.git` then `cd grupp-echo-CMS`
 3. `dotnet run --project src/Kvarter.Web`
 4. Open the URL shown in the terminal, complete the installer (create your own local admin user).
 5. Restart the site once – uSync imports everything the team has committed.
