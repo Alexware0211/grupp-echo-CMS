@@ -1,0 +1,44 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Extensions
+@*
+    Site header: logo, main navigation (built from the content tree), search link, language switcher.
+    Pages are shown in the menu if they sit directly under the home page and are not hidden
+    (add a true/false property with alias "umbracoNaviHide" to a doc type to allow hiding).
+*@
+@{
+    var home = Model.Root();
+    var navItems = home.Children().Where(x => x.IsVisible()).ToList();
+    var menuLabel = Umbraco.GetDictionaryValueOrDefault("Site.Menu", "Menu");
+    var searchLabel = Umbraco.GetDictionaryValueOrDefault("Site.Search", "Search");
+}
+<header class="site-header">
+    <div class="container site-header__inner">
+        <a class="brand" href="@home.Url()">
+            <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"></rect><path d="M7 21c3-3 6-3 9 0s6 3 9 0" stroke="#F2B33D" stroke-width="2.4" fill="none" stroke-linecap="round"></path><path d="M10 15V9h4v6M18 15V7h4v8" stroke="#fff" stroke-width="2" fill="none"></path></svg>
+            <span class="brand__name">Kvarter</span>
+        </a>
+
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+            <span class="visually-hidden">@menuLabel</span>
+        </button>
+
+        <nav id="site-nav" class="site-nav" aria-label="@menuLabel">
+            <ul class="site-nav__list">
+                @foreach (var item in navItems)
+                {
+                    var isActive = Model.IsDescendantOrSelf(item);
+                    <li><a class="site-nav__link" href="@item.Url()" aria-current="@(isActive ? "page" : null)">@item.Name</a></li>
+                }
+            </ul>
+        </nav>
+
+        <div class="site-header__tools">
+            @* TODO SCRUM-33: point this at the search page once it exists *@
+            <a class="icon-button" href="#" aria-label="@searchLabel">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+            </a>
+            @await Html.PartialAsync("Site/LanguageSwitcher", Model)
+        </div>
+    </div>
+</header>

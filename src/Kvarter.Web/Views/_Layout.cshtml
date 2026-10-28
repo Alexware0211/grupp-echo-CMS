@@ -1,0 +1,40 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using System.Globalization
+@using Umbraco.Extensions
+@*
+    Master layout for every page (SCRUM-21).
+    Use it from a page template:   @{ Layout = "_Layout.cshtml"; }
+    Optional sections:             @section Head { ... }   @section Scripts { ... }
+*@
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+    var pageTitle = ViewData["Title"] as string ?? Model.Name;
+}
+<!doctype html>
+<html lang="@lang">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>document.documentElement.classList.add('js')</script>
+    <title>@pageTitle | Kvarter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="/css/site.css">
+    @await RenderSectionAsync("Head", required: false)
+</head>
+<body>
+    <a class="skip-link" href="#main">@Umbraco.GetDictionaryValueOrDefault("Site.SkipToContent", "Skip to content")</a>
+
+    @await Html.PartialAsync("Site/Header", Model)
+
+    <main id="main" tabindex="-1">
+        @RenderBody()
+    </main>
+
+    @await Html.PartialAsync("Site/Footer", Model)
+
+    <script src="/js/site.js" defer></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

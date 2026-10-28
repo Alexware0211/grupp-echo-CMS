@@ -1,0 +1,38 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Extensions
+@*
+    Site footer. TODO SCRUM-28: replace the hard-coded texts and links with values
+    from the Site settings node once that document type exists.
+*@
+@{
+    var home = Model.Root();
+}
+<footer class="site-footer">
+    <div class="container site-footer__grid">
+        <div class="site-footer__about">
+            <a class="brand brand--light" href="@home.Url()"><span class="brand__name">Kvarter</span></a>
+            <p>@Umbraco.GetDictionaryValueOrDefault("Footer.Tagline", "A student project city guide to Stockholm.")</p>
+        </div>
+        <nav class="site-footer__col" aria-label="Footer">
+            <h2 class="site-footer__heading">@Umbraco.GetDictionaryValueOrDefault("Footer.Explore", "Explore")</h2>
+            <ul>
+                @foreach (var item in home.Children().Where(x => x.IsVisible()))
+                {
+                    <li><a href="@item.Url()">@item.Name</a></li>
+                }
+            </ul>
+        </nav>
+        <div class="site-footer__col">
+            <h2 class="site-footer__heading">@Umbraco.GetDictionaryValueOrDefault("Footer.About", "About")</h2>
+            <ul>
+                @* TODO SCRUM-49 / SCRUM-46: cookie settings + sitemap links *@
+                <li><a href="#">@Umbraco.GetDictionaryValueOrDefault("Footer.Privacy", "Privacy")</a></li>
+                <li><a href="#">@Umbraco.GetDictionaryValueOrDefault("Footer.Cookies", "Cookie settings")</a></li>
+                <li><a href="/sitemap.xml">Sitemap</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container site-footer__bottom">
+        <span>&copy; @DateTime.Now.Year Kvarter</span>
+    </div>
+</footer>

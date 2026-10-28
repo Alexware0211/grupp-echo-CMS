@@ -1,0 +1,9 @@
+* text=auto
+*.cs      text diff=csharp
+*.cshtml  text
+*.config  text eol=crlf
+*.sln     text eol=crlf
+*.png binary
+*.jpg binary
+*.webp binary
+*.woff2 binary

@@ -1,0 +1,31 @@
+# --- Visual Studio / Rider / VS Code ---
+.vs/
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.user
+*.suo
+*.userprefs
+
+# --- Build output ---
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.nupkg
+
+# --- Umbraco: per-developer data (never commit) ---
+**/umbraco/Data/
+**/umbraco/Logs/
+**/umbraco/mediacache/
+**/umbraco/models/*.generated.cs
+**/wwwroot/media/
+**/wwwroot/umbraco/
+
+# --- Secrets / local overrides ---
+appsettings.Local.json
+*.env
+
+# --- OS ---
+.DS_Store
+Thumbs.db
