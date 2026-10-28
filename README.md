@@ -9,13 +9,6 @@ Group project (Grupp Echo). Jira: https://grupp-echo.atlassian.net/jira/software
 | Schema sync | uSync – document types, data types, templates, dictionary and content are saved to `src/Kvarter.Web/uSync/` and committed |
 | Languages | Swedish (sv-SE) + English (en-US) |
 
-## First-time setup (only the person creating the repo)
-```powershell
-cd C:\Users\<you>\source\repos\Kvarter
-.\setup.ps1          # or: powershell -ExecutionPolicy Bypass -File .\setup.ps1
-```
-The script creates the Umbraco project, adds uSync, builds, makes the first commit and (if GitHub CLI is installed) creates the GitHub repo.
-
 ## Getting started (everyone else)
 1. Install the [.NET 10 SDK](https://dotnet.microsoft.com/download) and Visual Studio 2026 / Rider / VS Code.
 2. `git clone https://github.com/<owner>/Kvarter.git`
