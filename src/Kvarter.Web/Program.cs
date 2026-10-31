@@ -5,6 +5,18 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 #endif
 
+// Umbraco can fail to create the SQLite file on first run ("Boot failed"), so create an empty one.
+if (builder.Environment.IsDevelopment())
+{
+    string dataDirectory = Path.Combine(builder.Environment.ContentRootPath, "umbraco", "Data");
+    string databaseFile = Path.Combine(dataDirectory, "Umbraco.sqlite.db");
+    if (!File.Exists(databaseFile))
+    {
+        Directory.CreateDirectory(dataDirectory);
+        File.Create(databaseFile).Dispose();
+    }
+}
+
 builder.CreateUmbracoBuilder()
     .AddBackOffice()
     .AddWebsite()

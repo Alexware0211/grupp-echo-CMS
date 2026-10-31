@@ -1,10 +1,6 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using System.Globalization
 @using Umbraco.Extensions
-@*
-    Links to the current page in every language it exists in (SCRUM-30 builds on this).
-    Hidden automatically while a page only exists in one language.
-*@
 @{
     var current = CultureInfo.CurrentCulture.Name;
     var cultures = Model.Cultures.Keys.OrderByDescending(c => c).ToList();

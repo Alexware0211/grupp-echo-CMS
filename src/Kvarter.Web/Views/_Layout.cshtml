@@ -1,14 +1,8 @@
-﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using System.Globalization
 @using Umbraco.Extensions
-@*
-    Master template for every page (SCRUM-21). In the backoffice, pick "_Layout" as the
-    master template when you create a new template.
-    Optional sections:  @section Head { ... }   @section Scripts { ... }
-*@
 @{
     var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
-    // SEO composition (SCRUM-50): fall back to the page name when no meta title is set
     var metaTitle = Model.Value<string>("metaTitle");
     var metaDescription = Model.Value<string>("metaDescription");
     var pageTitle = ViewData["Title"] as string ?? (string.IsNullOrWhiteSpace(metaTitle) ? Model.Name : metaTitle);
