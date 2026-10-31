@@ -1,6 +1,3 @@
-// Kvarter - small progressive enhancements. Keep this file tiny (Lighthouse!).
-// (the 'js' class on <html> is set inline in _Layout.cshtml to avoid a menu flash)
-
 (function () {
     var toggle = document.querySelector('.nav-toggle');
     var nav = document.getElementById('site-nav');
