@@ -1,10 +1,5 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using Umbraco.Extensions
-@*
-    Site header: logo, main navigation (built from the content tree), search link, language switcher.
-    Pages are shown in the menu if they sit directly under the home page and are not hidden
-    (add a true/false property with alias "umbracoNaviHide" to a doc type to allow hiding).
-*@
 @{
     var home = Model.Root();
     var navItems = home.Children().Where(x => x.IsVisible()).ToList();
@@ -34,7 +29,7 @@
         </nav>
 
         <div class="site-header__tools">
-            @* TODO SCRUM-33: point this at the search page once it exists *@
+            @* TODO SCRUM-33: link to the search page *@
             <a class="icon-button" href="#" aria-label="@searchLabel">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
             </a>

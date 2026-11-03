@@ -1,23 +1,16 @@
-/* =========================================================================
-   Kvarter - site.css
-   1. Design tokens (from the design canvas - SCRUM-51). Use these variables
-      everywhere instead of hard-coded colours, so the site stays consistent.
-   2. Base   3. Layout helpers   4. Header + nav   5. Language switcher   6. Footer
-   ========================================================================= */
-
-/* 1. Design tokens ------------------------------------------------------- */
+/* Design tokens */
 :root {
-    --color-primary: #164E6B;       /* sea blue: buttons, links, active states */
-    --color-primary-dark: #0D3449;  /* hover */
-    --color-hero: #1E4256;          /* dark hero background */
-    --color-accent: #F2B33D;        /* saffron: call-to-action, highlights */
-    --color-ink: #13232E;           /* main text + footer background */
-    --color-muted: #4A5A64;         /* secondary text (AA on white and --color-bg) */
-    --color-bg: #F3F5F6;            /* page background */
-    --color-surface: #FFFFFF;       /* cards, header */
+    --color-primary: #164E6B;
+    --color-primary-dark: #0D3449;
+    --color-hero: #1E4256;
+    --color-accent: #F2B33D;
+    --color-ink: #13232E;
+    --color-muted: #4A5A64;
+    --color-bg: #F3F5F6;
+    --color-surface: #FFFFFF;
     --color-border: #DCE3E7;
-    --color-tint: #E7EEF2;          /* chips, subtle fills */
-    --color-sand: #FBEFD6;          /* newsletter / quote blocks */
+    --color-tint: #E7EEF2;
+    --color-sand: #FBEFD6;
 
     --font-display: "Bricolage Grotesque", system-ui, sans-serif;
     --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -32,7 +25,7 @@
     --header-height: 72px;
 }
 
-/* 2. Base ---------------------------------------------------------------- */
+/* Base */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body {
@@ -65,10 +58,10 @@ main:focus { outline: none; }
 }
 .skip-link:focus { top: var(--space-4); color: #fff; }
 
-/* 3. Layout helpers ------------------------------------------------------ */
+/* Layout helpers */
 .container { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: var(--space-5); }
 
-/* 4. Header + navigation ------------------------------------------------- */
+/* Header + navigation */
 .site-header { background: var(--color-surface); border-bottom: 1px solid var(--color-border); position: relative; z-index: 10; }
 .site-header__inner { display: flex; align-items: center; gap: var(--space-4) var(--space-6); min-height: var(--header-height); }
 
@@ -93,7 +86,6 @@ main:focus { outline: none; }
 }
 .nav-toggle { display: none; background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
 
-/* Mobile: menu collapses behind the toggle button */
 @media (max-width: 860px) {
     .site-header__inner { flex-wrap: wrap; }
     .brand { flex: 1 1 auto; }
@@ -105,11 +97,10 @@ main:focus { outline: none; }
     .site-nav__link { padding: 14px 0; border-bottom: 1px solid var(--color-border); }
     .site-nav__link[aria-current="page"] { border-bottom-color: var(--color-border); }
 }
-/* Without JavaScript the menu is always visible */
 html:not(.js) .site-nav { display: block; }
 html:not(.js) .nav-toggle { display: none; }
 
-/* 5. Language switcher --------------------------------------------------- */
+/* Language switcher */
 .lang-switch { list-style: none; margin: 0; padding: 0; display: flex; border: 1px solid var(--color-border); border-radius: var(--radius-pill); overflow: hidden; }
 .lang-switch__link {
     display: block; padding: 11px 14px; font-size: 0.875rem; font-weight: 600; line-height: 1;
@@ -117,7 +108,7 @@ html:not(.js) .nav-toggle { display: none; }
 }
 .lang-switch__link[aria-current="true"] { background: var(--color-primary); color: #fff; }
 
-/* 6. Footer -------------------------------------------------------------- */
+/* Footer */
 .site-footer { background: var(--color-ink); color: #C9D3D9; margin-top: var(--space-8); }
 .site-footer a { color: #C9D3D9; }
 .site-footer a:hover { color: #fff; }
