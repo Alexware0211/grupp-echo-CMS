@@ -1,10 +1,44 @@
-﻿@using Umbraco.Cms.Web.Common.PublishedModels;
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Home>
-@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+﻿@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Extensions
+
 @{
     Layout = "_Layout.cshtml";
+
+    var heading = Model.Value<string>("heroHeading");
+    var introduction = Model.Value<string>("introText");
+    var image = Model.Value<MediaWithCrops>("heroImage");
+
+    var title = string.IsNullOrWhiteSpace(heading)
+        ? Model.Name
+        : heading;
 }
-@* Start page. SCRUM-22 adds the hero and the block list here. *@
-<section class="container" style="padding-block: 64px;">
-    <h1>@Model.Name</h1>
+
+@section Head {
+    <link rel="stylesheet" href="/css/content-blocks.css">
+}
+
+<section class="home-hero">
+    <div class="container home-hero__inner">
+        <div class="home-hero__content">
+            <h1>@title</h1>
+
+            @if (!string.IsNullOrWhiteSpace(introduction))
+            {
+                <p class="home-hero__intro">@introduction</p>
+            }
+        </div>
+
+        @if (image is not null)
+        {
+            <img class="home-hero__image"
+                 src="@image.Url()"
+                 alt=""
+                 fetchpriority="high">
+        }
+    </div>
 </section>
+
+<div class="content-blocks">
+    @await Html.GetBlockListHtmlAsync(Model, "contentBlocks")
+</div>

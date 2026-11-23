@@ -1,0 +1,34 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Extensions
+
+@{
+    var heading = Model.Content.Value<string>("heading");
+    var introduction = Model.Content.Value<string>("introduction");
+    var image = Model.Content.Value<MediaWithCrops>("image");
+    var imageAltText = Model.Content.Value<string>("imageAltText") ?? "";
+}
+
+<section class="hero-block">
+    <div class="container hero-block__inner">
+        <div class="hero-block__content">
+            @if (!string.IsNullOrWhiteSpace(heading))
+            {
+                <h2>@heading</h2>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(introduction))
+            {
+                <p>@introduction</p>
+            }
+        </div>
+
+        @if (image is not null)
+        {
+            <img class="hero-block__image"
+                 src="@image.Url()"
+                 alt="@imageAltText"
+                 loading="lazy">
+        }
+    </div>
+</section>
