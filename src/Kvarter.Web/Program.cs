@@ -28,6 +28,21 @@ WebApplication app = builder.Build();
 
 await app.BootUmbracoAsync();
 
+app.MapGet("/robots.txt", (HttpRequest request) =>
+{
+    string sitemapUrl = $"{request.Scheme}://{request.Host}/sitemap.xml";
+
+    return Results.Text(
+        $"""
+        User-agent: *
+        Disallow: /umbraco/
+        Disallow: /api/
+        Disallow: /App_Plugins/
+
+        Sitemap: {sitemapUrl}
+        """,
+        "text/plain");
+});
 
 app.UseUmbraco()
     .WithMiddleware(u =>
