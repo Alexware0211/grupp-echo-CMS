@@ -1,0 +1,71 @@
+﻿@using Umbraco.Cms.Web.Common.PublishedModels;
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.Place>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels;
+
+@{
+    Layout = "_Layout.cshtml";
+    ViewData["Title"] = Model.Title;
+}
+
+<article class="place-page">
+    <section class="container place-hero">
+        @if (Model.MainImage is not null)
+        {
+            <img class="place-main-image"
+                 src="@Model.MainImage.Url()"
+                 alt="@Model.Title" />
+        }
+
+        <p class="place-category">@Model.Category</p>
+        <h1>@Model.Title</h1>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Intro))
+        {
+            <p class="place-intro">@Model.Intro</p>
+        }
+    </section>
+
+    <section class="container place-content">
+        @if (Model.Body is not null)
+        {
+            <div class="place-body">
+                @Model.Body
+            </div>
+        }
+
+        <aside class="place-details">
+            <h2>Practical information</h2>
+
+            <dl>
+                <dt>Address</dt>
+                <dd>@Model.Address</dd>
+
+                @if (!string.IsNullOrWhiteSpace(Model.OpeningHours))
+                {
+                    <dt>Opening hours</dt>
+                    <dd>@Model.OpeningHours</dd>
+                }
+
+                <dt>Coordinates</dt>
+                <dd>@Model.Coordinates</dd>
+            </dl>
+        </aside>
+    </section>
+
+    @if (Model.Gallery?.Any() == true)
+    {
+        <section class="container place-gallery">
+            <h2>Gallery</h2>
+
+            <div class="place-gallery-grid">
+                @foreach (var image in Model.Gallery)
+                {
+                    <img src="@image.Url()"
+                         alt="@Model.Title" />
+                }
+            </div>
+        </section>
+    }
+
+    @* Weather widget from the Weather epic will be connected here. *@
+</article>
