@@ -1,0 +1,193 @@
+﻿@using System.Globalization
+@using Umbraco.Cms.Web.Common.PublishedModels
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<ContentModels.PlacesOverview>
+@using ContentModels = Umbraco.Cms.Web.Common.PublishedModels
+
+@{
+    Layout = "_Layout.cshtml";
+    ViewData["Title"] = Model.Name;
+
+    var isSwedish =
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "sv";
+
+    var selectedCategory =
+        Context.Request.Query["category"].ToString();
+
+    var requestedPage = 1;
+
+    if (int.TryParse(
+        Context.Request.Query["page"],
+        out var parsedPage) && parsedPage > 0)
+    {
+        requestedPage = parsedPage;
+    }
+
+    const int pageSize = 6;
+
+    var allPlaces = Model
+        .Children<ContentModels.Place>()
+        .OrderBy(place => place.Title)
+        .ToList();
+
+    var categories = allPlaces
+        .Select(place => place.Category)
+        .Where(category => !string.IsNullOrWhiteSpace(category))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(category => category)
+        .ToList();
+
+    var filteredPlaces = string.IsNullOrWhiteSpace(selectedCategory)
+        ? allPlaces
+        : allPlaces
+            .Where(place =>
+                string.Equals(
+                    place.Category,
+                    selectedCategory,
+                    StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+    var totalPages = (int)Math.Ceiling(
+        filteredPlaces.Count / (double)pageSize);
+
+    var currentPage = Math.Min(
+        requestedPage,
+        Math.Max(totalPages, 1));
+
+    var visiblePlaces = filteredPlaces
+        .Skip((currentPage - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
+
+    var heading = isSwedish ? "Upptäck våra platser" : "Discover our places";
+    var intro = isSwedish
+        ? "Utforska platser och filtrera efter den kategori som intresserar dig."
+        : "Explore places and filter by the category that interests you.";
+
+    var filterLabel = isSwedish ? "Kategori" : "Category";
+    var allCategoriesLabel = isSwedish ? "Alla kategorier" : "All categories";
+    var filterButtonLabel = isSwedish ? "Filtrera" : "Filter";
+    var noResultsLabel = isSwedish
+        ? "Inga platser matchar ditt val."
+        : "No places match your selection.";
+    var previousLabel = isSwedish ? "Föregående" : "Previous";
+    var nextLabel = isSwedish ? "Nästa" : "Next";
+    var pageLabel = isSwedish ? "Sida" : "Page";
+    var ofLabel = isSwedish ? "av" : "of";
+}
+
+<main class="places-overview">
+    <header class="container places-overview__header">
+        <p class="places-overview__eyebrow">@Model.Name</p>
+        <h1>@heading</h1>
+        <p class="places-overview__intro">@intro</p>
+    </header>
+
+    <section class="container" aria-labelledby="places-filter-heading">
+        <h2 id="places-filter-heading" class="visually-hidden">
+            @filterLabel
+        </h2>
+
+        <form class="places-filter" method="get">
+            <label for="category">@filterLabel</label>
+
+            <select id="category" name="category">
+                <option value="">@allCategoriesLabel</option>
+
+                @foreach (var category in categories)
+                {
+                    if (string.Equals(
+                        category,
+                        selectedCategory,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        <option value="@category" selected>@category</option>
+                    }
+                    else
+                    {
+                        <option value="@category">@category</option>
+                    }
+                }
+            </select>
+
+            <button class="button" type="submit">
+                @filterButtonLabel
+            </button>
+        </form>
+
+        @if (visiblePlaces.Count == 0)
+        {
+            <p class="places-overview__empty">@noResultsLabel</p>
+        }
+        else
+        {
+            <div class="places-grid">
+                @foreach (var place in visiblePlaces)
+                {
+                    <article class="place-card">
+                        <a class="place-card__link" href="@place.Url()">
+                            @if (place.MainImage is not null)
+                            {
+                                <img
+                                    class="place-card__image"
+                                    src="@place.MainImage.Url()"
+                                    alt="@place.Title" />
+                            }
+                            else
+                            {
+                                <div
+                                    class="place-card__image place-card__image--placeholder"
+                                    aria-hidden="true">
+                                </div>
+                            }
+
+                            <div class="place-card__content">
+                                @if (!string.IsNullOrWhiteSpace(place.Category))
+                                {
+                                    <p class="place-card__category">
+                                        @place.Category
+                                    </p>
+                                }
+
+                                <h2>@place.Title</h2>
+
+                                @if (!string.IsNullOrWhiteSpace(place.Intro))
+                                {
+                                    <p>@place.Intro</p>
+                                }
+                            </div>
+                        </a>
+                    </article>
+                }
+            </div>
+        }
+
+        @if (totalPages > 1)
+        {
+            <nav class="places-pagination" aria-label="@pageLabel">
+                @if (currentPage > 1)
+                {
+                    var previousUrl =
+                        string.IsNullOrWhiteSpace(selectedCategory)
+                            ? $"?page={currentPage - 1}"
+                            : $"?category={Uri.EscapeDataString(selectedCategory)}&page={currentPage - 1}";
+
+                    <a href="@previousUrl">@previousLabel</a>
+                }
+
+                <span>
+                    @pageLabel @currentPage @ofLabel @totalPages
+                </span>
+
+                @if (currentPage < totalPages)
+                {
+                    var nextUrl =
+                        string.IsNullOrWhiteSpace(selectedCategory)
+                            ? $"?page={currentPage + 1}"
+                            : $"?category={Uri.EscapeDataString(selectedCategory)}&page={currentPage + 1}";
+
+                    <a href="@nextUrl">@nextLabel</a>
+                }
+            </nav>
+        }
+    </section>
+</main>
