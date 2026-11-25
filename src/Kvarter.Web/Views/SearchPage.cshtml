@@ -1,0 +1,106 @@
+﻿@using System.Globalization
+@using Examine
+@using Examine.Search
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Extensions
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Web.Common.PublishedModels.SearchPage>
+@inject IExamineManager ExamineManager
+
+@{
+    Layout = "_Layout.cshtml";
+
+    var searchTerm = Context.Request.Query["q"].ToString().Trim();
+    var culture = CultureInfo.CurrentUICulture.Name;
+    var indexCulture = culture.ToLowerInvariant();
+    var isSwedish = culture.StartsWith("sv", StringComparison.OrdinalIgnoreCase);
+
+    ViewData["Title"] = isSwedish ? "Sök" : "Search";
+
+    IEnumerable<IPublishedContent> results = Array.Empty<IPublishedContent>();
+
+    if (!string.IsNullOrWhiteSpace(searchTerm) &&
+        ExamineManager.TryGetIndex("ExternalIndex", out var index))
+    {
+        var fields = new[]
+        {
+            $"title_{indexCulture}",
+            $"intro_{indexCulture}",
+            $"body_{indexCulture}"
+        };
+
+        results = index.Searcher
+            .CreateQuery("content")
+            .GroupedOr(fields, searchTerm)
+            .Execute()
+            .Select(result => Umbraco.Content(result.Id))
+            .Where(content =>
+                content is not null &&
+                content.Cultures.ContainsKey(culture))
+            .Cast<IPublishedContent>()
+            .ToList();
+    }
+}
+
+<main class="search-page">
+    <div class="container">
+        <h1>@(isSwedish ? "Sök" : "Search")</h1>
+
+        <form class="search-form" method="get" action="@Model.Url()">
+            <label for="search-query">
+                @(isSwedish ? "Sök på webbplatsen" : "Search the site")
+            </label>
+
+            <div class="search-form__controls">
+                <input
+                    id="search-query"
+                    name="q"
+                    type="search"
+                    value="@searchTerm"
+                    placeholder="@(isSwedish ? "Sök efter platser, evenemang och artiklar" : "Search places, events and articles")" />
+
+                <button type="submit">
+                    @(isSwedish ? "Sök" : "Search")
+                </button>
+            </div>
+        </form>
+
+        @if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            if (results.Any())
+            {
+                <h2>
+                    @(isSwedish
+                        ? $"Sökresultat för ”{searchTerm}”"
+                        : $"Search results for “{searchTerm}”")
+                </h2>
+
+                <ul class="search-results">
+                    @foreach (var result in results)
+                    {
+                        var title = result.Value<string>("title") ?? result.Name;
+                        var intro = result.Value<string>("intro");
+
+                        <li class="search-results__item">
+                            <h3>
+                                <a href="@result.Url()">@title</a>
+                            </h3>
+
+                            @if (!string.IsNullOrWhiteSpace(intro))
+                            {
+                                <p>@intro</p>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>
+                    @(isSwedish
+                        ? "Inga sökresultat hittades."
+                        : "No search results were found.")
+                </p>
+            }
+        }
+    </div>
+</main>

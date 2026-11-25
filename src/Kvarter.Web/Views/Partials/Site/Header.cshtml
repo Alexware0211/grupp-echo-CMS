@@ -1,20 +1,30 @@
 @inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
 @using Umbraco.Extensions
+
 @{
     var home = Model.Root();
     var navItems = home.Children().Where(x => x.IsVisible()).ToList();
     var menuLabel = Umbraco.GetDictionaryValueOrDefault("Site.Menu", "Menu");
     var searchLabel = Umbraco.GetDictionaryValueOrDefault("Site.Search", "Search");
+    var searchPage = home.Children()
+        .FirstOrDefault(x => x.ContentType.Alias == "searchPage");
 }
+
 <header class="site-header">
     <div class="container site-header__inner">
         <a class="brand" href="@home.Url()">
-            <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="currentColor"></rect><path d="M7 21c3-3 6-3 9 0s6 3 9 0" stroke="#F2B33D" stroke-width="2.4" fill="none" stroke-linecap="round"></path><path d="M10 15V9h4v6M18 15V7h4v8" stroke="#fff" stroke-width="2" fill="none"></path></svg>
+            <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true">
+                <rect width="32" height="32" rx="8" fill="currentColor"></rect>
+                <path d="M7 21c3-3 6-3 9 0s6 3 9 0" stroke="#F2B33D" stroke-width="2.4" fill="none" stroke-linecap="round"></path>
+                <path d="M10 15V9h4v6M18 15V7h4v8" stroke="#fff" stroke-width="2" fill="none"></path>
+            </svg>
             <span class="brand__name">Kvarter</span>
         </a>
 
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h16"></path>
+            </svg>
             <span class="visually-hidden">@menuLabel</span>
         </button>
 
@@ -23,16 +33,37 @@
                 @foreach (var item in navItems)
                 {
                     var isActive = Model.IsDescendantOrSelf(item);
-                    <li><a class="site-nav__link" href="@item.Url()" aria-current="@(isActive ? "page" : null)">@item.Name</a></li>
+                    <li>
+                        <a class="site-nav__link" href="@item.Url()" aria-current="@(isActive ? "page" : null)">@item.Name</a>
+                    </li>
                 }
             </ul>
         </nav>
 
         <div class="site-header__tools">
-            @* TODO SCRUM-33: link to the search page *@
-            <a class="icon-button" href="#" aria-label="@searchLabel">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
-            </a>
+            @if (searchPage is not null)
+            {
+                <form class="header-search" action="@searchPage.Url()" method="get" role="search">
+                    <label class="visually-hidden" for="header-search-query">
+                        @searchLabel
+                    </label>
+
+                    <input
+                        id="header-search-query"
+                        class="header-search__input"
+                        name="q"
+                        type="search"
+                        placeholder="@searchLabel" />
+
+                    <button class="icon-button" type="submit" aria-label="@searchLabel">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <path d="M20 20l-4-4"></path>
+                        </svg>
+                    </button>
+                </form>
+            }
+
             @await Html.PartialAsync("Site/LanguageSwitcher", Model)
         </div>
     </div>
