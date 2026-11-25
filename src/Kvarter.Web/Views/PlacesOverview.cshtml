@@ -73,9 +73,24 @@
     var nextLabel = isSwedish ? "Nästa" : "Next";
     var pageLabel = isSwedish ? "Sida" : "Page";
     var ofLabel = isSwedish ? "av" : "of";
+
+    string GetCategoryLabel(string? category)
+    {
+        if (string.IsNullOrWhiteSpace(category) || !isSwedish)
+        {
+            return category ?? string.Empty;
+        }
+
+        return category switch
+        {
+            "Nature" => "Natur",
+            "Culture" => "Kultur",
+            _ => category
+        };
+    }
 }
 
-<main class="places-overview">
+<div class="places-overview">
     <header class="container places-overview__header">
         <p class="places-overview__eyebrow">@Model.Name</p>
         <h1>@heading</h1>
@@ -100,11 +115,11 @@
                         selectedCategory,
                         StringComparison.OrdinalIgnoreCase))
                     {
-                        <option value="@category" selected>@category</option>
+                        <option value="@category" selected>@GetCategoryLabel(category)</option>
                     }
                     else
                     {
-                        <option value="@category">@category</option>
+                        <option value="@category">@GetCategoryLabel(category)</option>
                     }
                 }
             </select>
@@ -144,7 +159,7 @@
                                 @if (!string.IsNullOrWhiteSpace(place.Category))
                                 {
                                     <p class="place-card__category">
-                                        @place.Category
+                                        @GetCategoryLabel(place.Category)
                                     </p>
                                 }
 
@@ -190,4 +205,4 @@
             </nav>
         }
     </section>
-</main>
+</div>
