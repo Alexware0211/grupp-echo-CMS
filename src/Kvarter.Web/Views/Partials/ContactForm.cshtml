@@ -1,0 +1,174 @@
+@using System.Globalization
+@using Kvarter.Web.Controllers
+@using Kvarter.Web.Models
+@using Umbraco.Extensions
+@model Kvarter.Web.Models.ContactFormViewModel
+
+@{
+    var isSwedish = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "sv";
+
+    string Text(string english, string swedish) =>
+        isSwedish ? swedish : english;
+
+    string Invalid(string fieldName) =>
+        ViewData.ModelState[fieldName]?.Errors.Count > 0 ? "true" : "false";
+
+    var success = TempData["ContactFormSuccess"] is bool saved && saved;
+}
+
+@if (success)
+{
+    <div class="contact-form__success" role="status">
+        <h2>@Text("Thank you!", "Tack!")</h2>
+        <p>
+            @Text(
+                "Your message has been saved. The tourist office will get back to you.",
+                "Ditt meddelande har sparats. Turistbyrån återkommer till dig.")
+        </p>
+    </div>
+}
+else
+{
+    @using (Html.BeginUmbracoForm<ContactFormController>(
+        "Submit",
+        null,
+        new
+        {
+            @class = "contact-form",
+            id = "contact-form",
+            novalidate = "novalidate"
+        }))
+    {
+        <p class="contact-form__note">
+            @Text("All fields are required.", "Alla fält är obligatoriska.")
+        </p>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="contact-form__summary" role="alert">
+                <h2>
+                    @Text(
+                        "Please check your details",
+                        "Kontrollera dina uppgifter")
+                </h2>
+                @Html.ValidationSummary(false, "", new { @class = "contact-form__errors" })
+            </div>
+        }
+
+        <div class="contact-form__field">
+            <label for="contact-name">
+                @Text("Name", "Namn")
+            </label>
+
+            @Html.TextBoxFor(
+                m => m.Name,
+                new
+                {
+                    id = "contact-name",
+                    autocomplete = "name",
+                    maxlength = "100",
+                    required = "required",
+                    aria_invalid = Invalid(nameof(Model.Name)),
+                    aria_describedby = "contact-name-error"
+                })
+
+            <span id="contact-name-error" class="contact-form__error">
+                @Html.ValidationMessageFor(m => m.Name)
+            </span>
+        </div>
+
+        <div class="contact-form__field">
+            <label for="contact-email">
+                @Text("Email", "E-post")
+            </label>
+
+            @Html.TextBoxFor(
+                m => m.Email,
+                new
+                {
+                    id = "contact-email",
+                    type = "email",
+                    autocomplete = "email",
+                    maxlength = "256",
+                    required = "required",
+                    aria_invalid = Invalid(nameof(Model.Email)),
+                    aria_describedby = "contact-email-error"
+                })
+
+            <span id="contact-email-error" class="contact-form__error">
+                @Html.ValidationMessageFor(m => m.Email)
+            </span>
+        </div>
+
+        <div class="contact-form__field">
+            <label for="contact-subject">
+                @Text("Subject", "Ämne")
+            </label>
+
+            @Html.TextBoxFor(
+                m => m.Subject,
+                new
+                {
+                    id = "contact-subject",
+                    maxlength = "200",
+                    required = "required",
+                    aria_invalid = Invalid(nameof(Model.Subject)),
+                    aria_describedby = "contact-subject-error"
+                })
+
+            <span id="contact-subject-error" class="contact-form__error">
+                @Html.ValidationMessageFor(m => m.Subject)
+            </span>
+        </div>
+
+        <div class="contact-form__field">
+            <label for="contact-message">
+                @Text("Message", "Meddelande")
+            </label>
+
+            @Html.TextAreaFor(
+                m => m.Message,
+                new
+                {
+                    id = "contact-message",
+                    rows = "7",
+                    maxlength = "4000",
+                    required = "required",
+                    aria_invalid = Invalid(nameof(Model.Message)),
+                    aria_describedby = "contact-message-error"
+                })
+
+            <span id="contact-message-error" class="contact-form__error">
+                @Html.ValidationMessageFor(m => m.Message)
+            </span>
+        </div>
+
+        <div class="contact-form__field">
+            <div class="contact-form__consent">
+                @Html.CheckBoxFor(
+                    m => m.ConsentGiven,
+                    new
+                    {
+                        id = "contact-consent",
+                        required = "required",
+                        aria_invalid = Invalid(nameof(Model.ConsentGiven)),
+                        aria_describedby = "contact-consent-error"
+                    })
+
+                <label for="contact-consent">
+                    @Text(
+                        "I agree that the tourist office may store my details and message to respond to my enquiry.",
+                        "Jag samtycker till att turistbyrån lagrar mina uppgifter och mitt meddelande för att besvara min fråga.")
+                </label>
+            </div>
+
+            <span id="contact-consent-error" class="contact-form__error">
+                @Html.ValidationMessageFor(m => m.ConsentGiven)
+            </span>
+        </div>
+
+        <button class="contact-form__submit" type="submit">
+            @Text("Send message", "Skicka meddelande")
+        </button>
+    }
+}
