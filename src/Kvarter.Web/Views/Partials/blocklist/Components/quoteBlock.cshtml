@@ -1,0 +1,27 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Extensions
+
+@{
+    var quoteText = Model.Content.Value<string>("quoteText");
+    var author = Model.Content.Value<string>("author");
+}
+
+@if (!string.IsNullOrWhiteSpace(quoteText))
+{
+    <section class="quote-block">
+        <div class="container">
+            <figure class="quote-block__figure">
+                <blockquote class="quote-block__text">
+                    <p>@quoteText</p>
+                </blockquote>
+
+                @if (!string.IsNullOrWhiteSpace(author))
+                {
+                    <figcaption class="quote-block__author">
+                        @author
+                    </figcaption>
+                }
+            </figure>
+        </div>
+    </section>
+}

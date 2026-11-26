@@ -1,0 +1,38 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using System.Linq
+@using System.Collections.Generic
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Extensions
+
+@{
+    var heading = Model.Content.Value<string>("heading");
+    var images = Model.Content
+        .Value<IEnumerable<MediaWithCrops>>("images")
+        ?.ToList();
+}
+
+@if (images is { Count: > 0 })
+{
+    <section class="image-gallery-block">
+        <div class="container">
+            @if (!string.IsNullOrWhiteSpace(heading))
+            {
+                <h2>@heading</h2>
+            }
+
+            <ul class="image-gallery-block__items">
+                @foreach (var image in images)
+                {
+                    var altText = image.Value<string>("altText") ?? "";
+
+                    <li class="image-gallery-block__item">
+                        <img class="image-gallery-block__image"
+                             src="@image.Url()"
+                             alt="@altText"
+                             loading="lazy">
+                    </li>
+                }
+            </ul>
+        </div>
+    </section>
+}

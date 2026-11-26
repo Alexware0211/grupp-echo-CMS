@@ -1,0 +1,35 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using Umbraco.Cms.Core.Models
+@using Umbraco.Extensions
+
+@{
+    var heading = Model.Content.Value<string>("heading");
+    var text = Model.Content.Value<string>("text");
+    var link = Model.Content.Value<Link>("link");
+}
+
+<section class="cta-block">
+    <div class="container cta-block__inner">
+        @if (!string.IsNullOrWhiteSpace(heading))
+        {
+            <h2>@heading</h2>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(text))
+        {
+            <p class="cta-block__text">@text</p>
+        }
+
+        @if (link is not null
+            && !string.IsNullOrWhiteSpace(link.Url)
+            && !string.IsNullOrWhiteSpace(link.Name))
+        {
+            <a class="cta-block__link"
+               href="@link.Url"
+               target="@link.Target"
+               rel="@(link.Target == "_blank" ? "noopener noreferrer" : null)">
+                @link.Name
+            </a>
+        }
+    </div>
+</section>

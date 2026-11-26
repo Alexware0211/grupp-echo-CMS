@@ -1,0 +1,37 @@
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<Umbraco.Cms.Core.Models.Blocks.BlockListItem>
+@using System.Linq
+@using System.Collections.Generic
+@using Umbraco.Cms.Core.Models.PublishedContent
+@using Umbraco.Extensions
+
+@{
+    var heading = Model.Content.Value<string>("heading");
+    var pages = Model.Content
+        .Value<IEnumerable<IPublishedContent>>("pages")
+        ?.Where(cardPage => cardPage.IsPublished())
+        .ToList();
+}
+
+@if (pages is { Count: > 0 })
+{
+    <section class="card-grid-block">
+        <div class="container">
+            @if (!string.IsNullOrWhiteSpace(heading))
+            {
+                <h2>@heading</h2>
+            }
+
+            <ul class="card-grid-block__items">
+                @foreach (var cardPage in pages)
+                {
+                    <li class="card-grid-block__item">
+                        <a class="card-grid-block__link"
+                           href="@cardPage.Url()">
+                            @cardPage.Name
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </section>
+}
