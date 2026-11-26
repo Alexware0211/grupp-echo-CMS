@@ -1,0 +1,34 @@
+﻿@using System.Globalization
+@using Kvarter.Web.Models
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage
+
+@{
+    Layout = "_Layout.cshtml";
+
+    var isSwedish =
+        CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "sv";
+
+    var heading = isSwedish ? "Kontakta oss" : "Contact us";
+
+    var introduction = isSwedish
+        ? "Har du frågor inför din resa? Skicka ett meddelande till turistbyrån."
+        : "Have a question about your trip? Send a message to the tourist office.";
+}
+
+@section Head
+{
+    <link rel="stylesheet"
+          href="@Url.Content("~/css/contact-form.css")"
+          asp-append-version="true" />
+}
+
+<section class="contact-page container" aria-labelledby="contact-heading">
+    <header class="contact-page__header">
+        <h1 id="contact-heading">@heading</h1>
+        <p>@introduction</p>
+    </header>
+
+    @await Html.PartialAsync(
+        "ContactForm",
+        new ContactFormViewModel())
+</section>
